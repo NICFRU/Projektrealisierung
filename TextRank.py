@@ -5,12 +5,13 @@ from summa import keywords
 from summa.summarizer import summarize
 
 # Laden des Spacy-Modells
-nlp = spacy.load("en_core_web_lg")
+
 
 
 
 def textrank_extractive(text, compression_rate=0.5):
     # Tokenisierung
+    nlp = spacy.load("en_core_web_lg")
     doc = nlp(text)
     sentences = [sent.text for sent in doc.sents]
 
