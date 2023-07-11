@@ -16,8 +16,9 @@ st.markdown(
 # SynTeX Logo anzeigen
 st.image("syntex_logo.png", use_column_width=True)
 
-# Eingabefeld für Dateiupload
+# Eingabefeld für Dateiupload und String-Eingabe
 uploaded_file = st.file_uploader("Datei hochladen")
+input_string = st.text_input("Eingabe")
 
 # Ladebalken anzeigen
 progress_bar = st.progress(0)
@@ -77,3 +78,7 @@ if uploaded_file:
             progress_bar.progress(percent_complete + 1)
         progress_bar.empty()
         output_text.write("Datei erfolgreich hochgeladen!")
+
+# String-Eingabe-Handler
+if input_string:
+    st.write("Eingabe:", input_string)
