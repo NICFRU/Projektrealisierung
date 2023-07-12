@@ -5,4 +5,5 @@ model
 speek_to_text/klassifizieren
 speek_to_text/text.txt
 speek_to_text/transcription.txt
-data\data_with_features
+data/data_with_features
+
