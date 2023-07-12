@@ -4,10 +4,32 @@ from keras.models import load_model
 from sklearn.feature_extraction.text import TfidfVectorizer
 import joblib
 import numpy as np
+import streamlit as st
+from PyPDF2 import PdfFileReader
+from docx import Document
 
 
-model = load_model("./models/classification/neuro_net_1.h5")
-vectorizer = joblib.load("./models/classification/vectorizer_1.joblib")
+model = load_model("../models/classification/neuro_net_1.h5")
+vectorizer = joblib.load("../models/classification/vectorizer_1.joblib")
+
+def read_pdf(file):
+    pdf = PdfFileReader(file)
+    text = ""
+    for page in range(pdf.numPages):
+        text += pdf.getPage(page).extractText()
+    return text
+
+def read_docx(file):
+    doc = Document(file)
+    text = ""
+    for paragraph in doc.paragraphs:
+        text += paragraph.text + "\n"
+    return text
+
+def read_txt(file):
+    with open(file.name, 'r', encoding='utf-8') as f:
+        text = f.read()
+    return text
 
 def summarize_text(text, compression_rate):
     # Hier erfolgt die Zusammenfassung des Textes unter Berücksichtigung der Kompressionsrate
@@ -64,6 +86,23 @@ def main():
     # Texteingabe
     input_text = st.text_area("Text eingeben", "")
     
+    # Dokument auswählen
+    file = st.file_uploader("Dokument auswählen", type=["pdf", "docx", "txt"])
+
+    if file is not None:
+        content = ""
+
+        file_type = file.type
+        if file_type == 'application/pdf':
+            content = read_pdf(file)
+        elif file_type == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+            content = read_docx(file)
+        elif file_type == 'text/plain':
+            content = read_txt(file)
+
+        st.header("Inhalt des Dokuments")
+        st.text_area("Ausgabe", value=content, height=500)
+    
     # Checkboxen für Klassifikation und Zusammenfassung
     classification_enabled = st.checkbox("Klassifikation aktivieren")
     summarization_enabled = st.checkbox("Zusammenfassung aktivieren")
@@ -99,6 +138,8 @@ def main():
                     st.write(f"Achtung! Das Modell ist sich nicht ganz sicher. Die von dem Modell errechnete Klasse ist: \"{predicted_class}\". Das Modell sagt diese Klasse allerdings nur mit einer Wahrscheinlichkeit von {predicted_probability}% vorraus.")
         else:
             st.warning("Bitte geben Sie zuerst einen Text ein.")
+
+
 
 if __name__ == '__main__':
     main()
