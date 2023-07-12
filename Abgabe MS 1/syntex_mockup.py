@@ -5,18 +5,19 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 import joblib
 import numpy as np
 import streamlit as st
-from PyPDF2 import PdfFileReader
+from PyPDF2 import PdfReader
 from docx import Document
+
 
 
 model = load_model("../models/classification/neuro_net_1.h5")
 vectorizer = joblib.load("../models/classification/vectorizer_1.joblib")
 
 def read_pdf(file):
-    pdf = PdfFileReader(file)
+    pdf = PdfReader(file)
     text = ""
-    for page in range(pdf.numPages):
-        text += pdf.getPage(page).extractText()
+    for page in range(len(pdf.pages) ):
+        text += pdf.pages[page].extract_text()
     return text
 
 def read_docx(file):
@@ -101,7 +102,7 @@ def main():
             content = read_txt(file)
 
         st.header("Inhalt des Dokuments")
-        st.text_area("Ausgabe", value=content, height=500)
+        input_text = st.text_area("Ausgabe", value=content, height=500)
     
     # Checkboxen für Klassifikation und Zusammenfassung
     classification_enabled = st.checkbox("Klassifikation aktivieren")
