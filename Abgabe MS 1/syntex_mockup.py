@@ -1,6 +1,13 @@
 import streamlit as st
 import plotly.graph_objects as go
+from keras.models import load_model
+from sklearn.feature_extraction.text import TfidfVectorizer
+import joblib
+import numpy as np
 
+
+model = load_model("./models/classification/neuro_net_1.h5")
+vectorizer = joblib.load("./models/classification/vectorizer_1.joblib")
 
 def summarize_text(text, compression_rate):
     # Hier erfolgt die Zusammenfassung des Textes unter Berücksichtigung der Kompressionsrate
@@ -44,12 +51,11 @@ def summarize_text(text, compression_rate):
     return summarized_text
 
 def classify_text(text):
-    # Hier erfolgt die Klassifizierung des Textes
-    # Implementiere hier deine Logik zur Klassifizierung des Textes
-    # Beispielklassifikation
-    labels = ['Review', 'Abstract', 'Literature', 'News']
-    values = [10, 80, 3, 2]
-    return labels, values
+    new_text_features = vectorizer.transform([text])
+    predictions = model.predict(new_text_features.toarray())
+    predicted_class = np.argmax(predictions, axis=1)
+    predicted_probability = np.max(predictions, axis=1)
+    return predicted_class, predicted_probability
 
 # Streamlit-App
 def main():
@@ -75,10 +81,22 @@ def main():
                 st.write(summarized_text)
             
             if classification_enabled:
-                labels, values = classify_text(input_text)
+                predicted_class, predicted_probability = classify_text(input_text)
+                predicted_probability = round(predicted_probability[0]*100, 2)
+                if predicted_class == 0:
+                    predicted_class = "Wissenschaftliches Paper"
+                elif predicted_class == 1:
+                    predicted_class = "Nachrichtenartikel"
+                elif predicted_class == 2:
+                    predicted_class = "Review"
+                else:
+                    predicted_class = "Literarischer Text"
                 st.subheader("Klassifikation")
-                fig = go.Figure(data=[go.Pie(labels=labels, values=values)])
-                st.plotly_chart(fig)
+
+                if predicted_probability >= 95:
+                    st.write(f"Die von dem Modell errechnete Klasse ist: \"{predicted_class}\". Das Modell ist sich mit einer Wahrscheinlichkeit von {predicted_probability}%  sehr sicher.")
+                else:
+                    st.write(f"Achtung! Das Modell ist sich nicht ganz sicher. Die von dem Modell errechnete Klasse ist: \"{predicted_class}\". Das Modell sagt diese Klasse allerdings nur mit einer Wahrscheinlichkeit von {predicted_probability}% vorraus.")
         else:
             st.warning("Bitte geben Sie zuerst einen Text ein.")
 
