@@ -7,11 +7,47 @@ import numpy as np
 import streamlit as st
 from PyPDF2 import PdfReader
 from docx import Document
-
+import pyttsx3
+import time
 
 
 model = load_model("../models/classification/neuro_net_1.h5")
 vectorizer = joblib.load("../models/classification/vectorizer_1.joblib")
+
+all_texts = "Syntex. Please input your text here or choose a file to upload. Activate either the classification or the summarization by checking the boxes, and if needed, choose a compression ratio of the text. Then click on the last button, to get your desired result."
+
+engine = pyttsx3.init()
+engine.setProperty('rate', 150)  # Anpassen der Sprechgeschwindigkeit (optional)
+
+def text_to_speech(text):
+    global engine
+    engine.say(text)
+    engine.runAndWait()  
+
+def extract_text_from_element(element):
+    # Extrahiere den Text aus einem Streamlit-Element
+    if hasattr(element, 'text'):
+        return element.text
+    elif isinstance(element, (list, tuple)):
+        return ' '.join([extract_text_from_element(item) for item in element])
+    elif isinstance(element, dict):
+        return ' '.join([extract_text_from_element(item) for item in element.values()])
+    else:
+        return str(element)
+    
+def extract_text_from_page(page):
+    # Extrahiere den Text aus einer Streamlit-Seite
+    text = ''
+    for element in page:
+        text += extract_text_from_element(element)
+    return text
+
+# # Texteingabe
+# text = st.text_input("Geben Sie den Text ein:")
+
+# # Button zum Auslösen der Sprachausgabe
+# if st.button("Text vorlesen"):
+#     text_to_speech(text)
 
 def read_pdf(file):
     pdf = PdfReader(file)
@@ -82,13 +118,51 @@ def classify_text(text):
 
 # Streamlit-App
 def main():
-    st.title("SynTex")
     
+    # Führe eine Wartezeit von wait_time Sekunden durch
+    time.sleep(20)
+
+    # Texteingabe
+    text = "Welcome to Syntex, to proceed further with the screenreader function, tap the big red botton on the left in the middle of your screen"
+    text_to_speech(text)
+
+    st.title("SynTex")
+
     # Texteingabe
     input_text = st.text_area("Text eingeben", "")
     
     # Dokument auswählen
     file = st.file_uploader("Dokument auswählen", type=["pdf", "docx", "txt"])
+
+
+    # Add custom CSS style
+    st.markdown(
+        """
+        <style>
+        .red-button {
+            background-color: red;
+            color: white;
+            padding: 0.5rem 2rem;
+            font-size: 1.5rem;
+            border-radius: 0.5rem;
+            border: none;
+            cursor: pointer;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
+    # Display the red button using custom CSS class
+    button_clicked = st.markdown(
+        """
+        <button class="red-button">Screen Reader</button>
+        """,
+        unsafe_allow_html=True
+    )
+    if button_clicked:
+        text_to_speech(all_texts)
+    
 
     if file is not None:
         content = ""
@@ -144,3 +218,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+
