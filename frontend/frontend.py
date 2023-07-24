@@ -10,6 +10,9 @@ from PyPDF2 import PdfReader
 from docx import Document
 import time
 
+from bokeh.models.widgets import Button
+from bokeh.models import CustomJS
+from streamlit_bokeh_events import streamlit_bokeh_events
 
 
 # Laden der Imports für die Speech to Text Funktion
@@ -67,8 +70,36 @@ st.write('<style>div.row-widget button{font-size: 30px !important;}</style>', un
 # Schriftgröße für Text Area anpassen
 st.write('<style>div.row-widget textarea{font-size: 35px !important;}</style>', unsafe_allow_html=True)
 
-all_texts = "Syntex. Please input your text here or choose a file to upload. Activate either the classification or the summarization by checking the boxes, and if needed, choose a compression ratio of the text. Then click on the last button, to get your desired result."
+m = st.markdown("""
+<style>
+div.stButton > button:nth-of-type(2) {
+    background-color: #ce1126;
+    color: white;
+    height: 3em;
+    width: 12em;
+    border-radius:10px;
+    border:3px solid #000000;
+    font-size:20px;
+    font-weight: bold;
+    margin: auto;
+    display: block;
+}
 
+div.stButton > button:hover {
+	background:linear-gradient(to bottom, #ce1126 5%, #ff5a5a 100%);
+	background-color:#ce1126;
+}
+    /* 1st button */
+    .element-container:nth-child(3) {
+      left: 10px;
+      top: -60px;
+    }
+div.stButton > button:active {
+	position:relative;
+	top:3px;
+}
+
+</style>""", unsafe_allow_html=True)
 # engine = pyttsx3.init()
 # engine.setProperty('rate', 150)  # Anpassen der Sprechgeschwindigkeit (optional)
 
@@ -96,11 +127,10 @@ def extract_text_from_page(page):
     return text
 
 # # Texteingabe
-text = st.text_input("Geben Sie den Text ein:")
+
 
 # Button zum Auslösen der Sprachausgabe
-if st.button("Text vorlesen"):
-    modell_speak(text)
+
 
 def read_pdf(file):
     pdf = PdfReader(file)
@@ -138,22 +168,78 @@ def classify_text(text):
     predicted_class = np.argmax(predictions, axis=1)
     predicted_probability = np.max(predictions, axis=1)
     return predicted_class, predicted_probability
+def style_button_row(clicked_button_ix, n_buttons):
+    def get_button_indices(button_ix):
+        return {
+            'nth_child': button_ix,
+            'nth_last_child': n_buttons - button_ix + 1
+        }
 
+    clicked_style = """
+    div[data-testid*="stHorizontalBlock"] > div:nth-child(%(nth_child)s):nth-last-child(%(nth_last_child)s) button {
+        border-color: rgb(255, 75, 75);
+        color: rgb(255, 75, 75);
+        box-shadow: rgba(255, 75, 75, 0.5) 0px 0px 0px 0.2rem;
+        outline: currentcolor none medium;
+    }
+    """
+    unclicked_style = """
+    div[data-testid*="stHorizontalBlock"] > div:nth-child(%(nth_child)s):nth-last-child(%(nth_last_child)s) button {
+        pointer-events: none;
+        cursor: not-allowed;
+        opacity: 0.65;
+        filter: alpha(opacity=65);
+        -webkit-box-shadow: none;
+        box-shadow: none;
+    }
+    """
+    style = ""
+    for ix in range(n_buttons):
+        ix += 1
+        if ix == clicked_button_ix:
+            style += clicked_style % get_button_indices(ix)
+        else:
+            style += unclicked_style % get_button_indices(ix)
+    st.markdown(f"<style>{style}</style>", unsafe_allow_html=True)
 # Streamlit-App
 def main():
     
     # Führe eine Wartezeit von wait_time Sekunden durch
-    time.sleep(20)
+    time.sleep(30)
 
     # Texteingabe
-    text = "Welcome to Syntex, to proceed further with the screenreader function, tap the big red botton on the left in the middle of your screen"
-    modell_speak(text)
+    
+    # text_vorlesen = "Welcome to Syntex, to proceed further with the screenreader function, tap the big red botton on the left in the middle of your screen"
+    # modell_speak(text_vorlesen)
+
 
     st.title("SynTex")
 
     # Texteingabe
     input_text = st.text_area("Enter a text", "")
-    
+    col1, col2 =  st.columns(2)
+    with col1:
+        if st.button("read text", on_click=style_button_row, kwargs={
+        'clicked_button_ix': 1, 'n_buttons': 2}):
+            if input_text == "":
+                    st.warning("Please enter a text first")
+                    modell_speak("Please enter a text first.")
+            else:
+                modell_speak(input_text)
+    with col2:
+        if st.button("Speech to Text", on_click=style_button_row, kwargs={
+            'clicked_button_ix': 2, 'n_buttons': 2
+        }):
+            st.write("Click to start recording")
+
+
+
+    # if st.button("read text"):
+    #     if input_text == "":
+    #         st.warning("Please enter a text first")
+    #         modell_speak("Please enter a text first.")
+    #     else:
+    #         modell_speak(input_text)
     # Dokument auswählen
     file = st.file_uploader("PLease select a doucment", type=["pdf", "docx", "txt"])
 
@@ -176,16 +262,9 @@ def main():
         unsafe_allow_html=True
     )
 
-    # Display the red button using custom CSS class
-    button_clicked = st.markdown(
-        """
-        <button class="red-button">Screen Reader</button>
-        """,
-        unsafe_allow_html=True
-    )
-    if button_clicked:
-        modell_speak(all_texts)
+   
     
+   
 
     if file is not None:
         content = ""
@@ -209,7 +288,7 @@ def main():
     compression_rate = st.slider("Compression rate (%)", min_value=0, max_value=100, value=50, step=1)
     
     # Knopf zum Zusammenfassen und Klassifizieren
-    if st.button("Execute"):
+    if st.button("Execute",key=2,type='secondary'):
         if input_text:
             
             if classification_enabled:
@@ -237,8 +316,36 @@ def main():
         else:
             st.warning("Please enter a text first.")
 
+#     m = st.markdown("""
+# <style>
+# div.stButton > button:nth-of-type(1) {
+#     background-color: #ce1126;
+#     color: white;
+#     height: 3em;
+#     width: 12em;
+#     border-radius:10px;
+#     border:3px solid #000000;
+#     font-size:20px;
+#     font-weight: bold;
+#     margin: auto;
+#     display: block;
+# }
 
+# div.stButton > button:hover {
+# 	background:linear-gradient(to bottom, #ce1126 5%, #ff5a5a 100%);
+# 	background-color:#ce1126;
+# }
+ 
+# div.stButton > button:active {
+# 	position:relative;
+# 	top:3px;
+# }
 
+# </style>""", unsafe_allow_html=True)
+    if st.button("Screen reader",type='primary'):
+        scren_text='Welcome to Syntex. Please input your text in the text area and press the read text button to hear the text. If you want to upload a document, please select the document type and press the execute button. If you want to activate the classification and the summary, please check the corresponding boxes. You can adjust the compression rate with the slider. To execute the classification and the summary, please press the execute button.'
+        modell_speak(scren_text)
 if __name__ == '__main__':
+    
     main()
 
