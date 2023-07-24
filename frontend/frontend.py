@@ -1,18 +1,17 @@
 import streamlit as st
 import plotly.graph_objects as go
 from keras.models import load_model
+from tkinter import Tk
+from tkinter.filedialog import askopenfilename
 
 import joblib
 from joblib import load
 import numpy as np
 import streamlit as st
+import PyPDF2
 from PyPDF2 import PdfReader
 from docx import Document
 import time
-
-from bokeh.models.widgets import Button
-from bokeh.models import CustomJS
-from streamlit_bokeh_events import streamlit_bokeh_events
 
 
 # Laden der Imports für die Speech to Text Funktion
@@ -130,6 +129,23 @@ def extract_text_from_page(page):
 
 
 # Button zum Auslösen der Sprachausgabe
+def read_docx_file(file_path):
+    doc = Document(file_path)
+    paragraphs = [p.text for p in doc.paragraphs]
+    return paragraphs
+
+def read_txt_file(file_path):
+    with open(file_path, 'r') as file:
+        content = file.read()
+    return content
+
+def read_pdf_file(file_path):
+    content = ""
+    with open(file_path, 'rb') as file:
+        pdf = PyPDF2.PdfReader(file)
+        for page in pdf.pages:
+            content += page.extract_text()
+    return content
 
 
 def read_pdf(file):
@@ -202,11 +218,19 @@ def style_button_row(clicked_button_ix, n_buttons):
             style += unclicked_style % get_button_indices(ix)
     st.markdown(f"<style>{style}</style>", unsafe_allow_html=True)
 # Streamlit-App
+
 def main():
     
     # Führe eine Wartezeit von wait_time Sekunden durch
-    time.sleep(30)
-
+    #time.sleep(30)
+    global content
+    try:
+        if content != "":
+            content=content
+        else:
+            content = ""
+    except:
+        content = ""
     # Texteingabe
     
     # text_vorlesen = "Welcome to Syntex, to proceed further with the screenreader function, tap the big red botton on the left in the middle of your screen"
@@ -214,35 +238,8 @@ def main():
 
 
     st.title("SynTex")
-
-    # Texteingabe
-    input_text = st.text_area("Enter a text", "")
-    col1, col2 =  st.columns(2)
-    with col1:
-        if st.button("read text", on_click=style_button_row, kwargs={
-        'clicked_button_ix': 1, 'n_buttons': 2}):
-            if input_text == "":
-                    st.warning("Please enter a text first")
-                    modell_speak("Please enter a text first.")
-            else:
-                modell_speak(input_text)
-    with col2:
-        if st.button("Speech to Text", on_click=style_button_row, kwargs={
-            'clicked_button_ix': 2, 'n_buttons': 2
-        }):
-            st.write("Click to start recording")
-
-
-
-    # if st.button("read text"):
-    #     if input_text == "":
-    #         st.warning("Please enter a text first")
-    #         modell_speak("Please enter a text first.")
-    #     else:
-    #         modell_speak(input_text)
-    # Dokument auswählen
     file = st.file_uploader("PLease select a doucment", type=["pdf", "docx", "txt"])
-
+    print(file)
 
     # Add custom CSS style
     st.markdown(
@@ -262,11 +259,31 @@ def main():
         unsafe_allow_html=True
     )
 
-   
+    # if st.button("Upload a document",key=1,type='primary'):
+    #     root = Tk()
+    #     root.withdraw()
+    #     file_path = askopenfilename(filetypes=[("Textdokumente", "*.txt"), ("Word-Dokumente", "*.docx"), ("PDF-Dateien", "*.pdf")])
+
+    #     if file_path:
+    #         if file_path.endswith('.docx'):
+    #             input_text = read_docx_file(file_path)
+    #             print(input_text)
+    #         elif file_path.endswith('.txt'):
+    #             input_text = read_txt_file(file_path)
+    #             print(input_text)
+    #         elif file_path.endswith('.pdf'):
+    #             input_text = read_pdf_file(file_path)
+    #             print(input_text)
+    #         else:
+    #             print("Ungültiger Dateityp. Nur DOCX-, TXT- und PDF-Dateien werden unterstützt.")
+    #     else:
+    #         print("Keine Datei ausgewählt.")
     
-   
+    
+
 
     if file is not None:
+        
         content = ""
 
         file_type = file.type
@@ -278,7 +295,44 @@ def main():
             content = read_txt(file)
 
         st.header("Inhalt des Dokuments")
-        input_text = st.text_area("Ausgabe", value=content, height=500)
+        input_text = st.text_area("Ausgabe", value=content, height=200, key=20)
+        
+    if st.button("Speech to Text", on_click=style_button_row, kwargs={
+        'clicked_button_ix': 2, 'n_buttons': 2
+    }):
+        st.write("Click to start recording")
+        
+        content=record_audio(filename='transcription_2.txt')
+        # content = read_txt(file)
+       
+        input_text = st.text_area("Speech to Text an copy the text into the Textbox", value=content, height=200, key=30)
+        
+    
+    # Texteingabe
+    if file is None:
+        input_text = st.text_area("Enter a text", '', key=10)
+    
+
+    if st.button("read text", on_click=style_button_row, kwargs={
+    'clicked_button_ix': 1, 'n_buttons': 2}):
+        if input_text == "":
+                st.warning("Please enter a text first")
+                modell_speak("Please enter a text first.")
+        else:
+            modell_speak(input_text)
+
+   
+
+
+
+    # if st.button("read text"):
+    #     if input_text == "":
+    #         st.warning("Please enter a text first")
+    #         modell_speak("Please enter a text first.")
+    #     else:
+    #         modell_speak(input_text)
+    # Dokument auswählen
+    
     
     # Checkboxen für Klassifikation und Zusammenfassung
     classification_enabled = st.checkbox("Activate classification")
@@ -290,7 +344,7 @@ def main():
     # Knopf zum Zusammenfassen und Klassifizieren
     if st.button("Execute",key=2,type='secondary'):
         if input_text:
-            
+            input_text = model_text_korrigieren.restore_punctuation(input_text)
             if classification_enabled:
                 predicted_class, predicted_probability = classify_text(input_text)
                 predicted_probability = round(predicted_probability[0]*100, 2)
