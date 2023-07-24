@@ -1,13 +1,13 @@
 import streamlit as st
 import plotly.graph_objects as go
 from keras.models import load_model
-from sklearn.feature_extraction.text import TfidfVectorizer
+
 import joblib
+from joblib import load
 import numpy as np
 import streamlit as st
 from PyPDF2 import PdfReader
 from docx import Document
-import pyttsx3
 import time
 
 
@@ -21,7 +21,7 @@ import os
 import random
 from gtts import gTTS
 
-#from python_scripts.transcript_creation import modell_speak, record_audio
+from python_scripts.transcript_creation import modell_speak, record_audio
 
 ##############################################
 # Laden der Imports für die Zusammenfassung
@@ -36,7 +36,6 @@ import evaluate
 import nltk
 from nltk.tokenize import sent_tokenize
 from transformers import AutoModelForSeq2SeqLM, AutoTokenizer,PreTrainedTokenizerFast
-from collections import Counter
 import matplotlib.pyplot as plt
 import math
 from tqdm import tqdm
@@ -52,7 +51,7 @@ from python_scripts.zusammenfassung import execute_text_gen
 model_text_korrigieren = PunctuationModel()
 ## Laden des Modells für die Klassifikation
 model_classification = load_model("classification/neuro_net_1.h5")
-vectorizer = joblib.load("classification/vectorizer_1.joblib")
+vectorizer = load("classification/vectorizer_1.joblib")
 
 ## Laden des Modells für die Zusammenfassung
 for model_name in ['NICFRU/bart-base-paraphrasing-science','NICFRU/bart-base-paraphrasing-news','NICFRU/bart-base-paraphrasing-story','NICFRU/bart-base-paraphrasing-review']:
@@ -97,11 +96,11 @@ def extract_text_from_page(page):
     return text
 
 # # Texteingabe
-# text = st.text_input("Geben Sie den Text ein:")
+text = st.text_input("Geben Sie den Text ein:")
 
-# # Button zum Auslösen der Sprachausgabe
-# if st.button("Text vorlesen"):
-#     text_to_speech(text)
+# Button zum Auslösen der Sprachausgabe
+if st.button("Text vorlesen"):
+    modell_speak(text)
 
 def read_pdf(file):
     pdf = PdfReader(file)
@@ -148,7 +147,7 @@ def main():
 
     # Texteingabe
     text = "Welcome to Syntex, to proceed further with the screenreader function, tap the big red botton on the left in the middle of your screen"
-    #text_to_speech(text)
+    modell_speak(text)
 
     st.title("SynTex")
 
@@ -184,8 +183,8 @@ def main():
         """,
         unsafe_allow_html=True
     )
-    #if button_clicked:
-        #text_to_speech(all_texts)
+    if button_clicked:
+        modell_speak(all_texts)
     
 
     if file is not None:

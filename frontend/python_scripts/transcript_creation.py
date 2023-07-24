@@ -1,10 +1,10 @@
 ####### Installieren der benötigten Pakete #######
 '''
-pip install speechrecognition           
-pip install pyaudio
-pip install playsound
-pip install gtts
-pip install PyObjC - für Mac
+pip uninstall speechrecognition           
+pip uninstall pyaudio
+pip uninstall playsound
+pip uninstall gtts
+pip uninstall PyObjC - für Mac
 '''
 ####
 import speech_recognition as sr
@@ -40,8 +40,6 @@ def record_audio(ask="",filename='transcription.txt'):
         # if ask:!
         #     print(ask)
         #audio = r.listen(source, 5, 5)  # listen for the audio via source
-        
-        
         voice_data = ''
         modell_speak("Starting transcription")
         modell_speak("You can speak now!")
@@ -76,10 +74,8 @@ def modell_speak(audio_string):
     playsound.playsound(audio_file) # play the audio file
     print(audio_string) # print what app said
     os.remove(audio_file) # remove audio file
+    time.sleep(1)
 
-time.sleep(1)
-
-modell_speak('How can I help you')
 
 if __name__ == "__main__":
     while 1:
