@@ -1,0 +1,42 @@
+from tkinter import Tk
+from tkinter.filedialog import askopenfilename
+from docx import Document
+import PyPDF2
+
+def read_docx_file(file_path):
+    doc = Document(file_path)
+    paragraphs = [p.text for p in doc.paragraphs]
+    return paragraphs
+
+def read_txt_file(file_path):
+    with open(file_path, 'r') as file:
+        content = file.read()
+    return content
+
+def read_pdf_file(file_path):
+    content = ""
+    with open(file_path, 'rb') as file:
+        pdf = PyPDF2.PdfReader(file)
+        for page in pdf.pages:
+            content += page.extract_text()
+    return content
+
+# Öffne den Dateiauswahldialog des Betriebssystems
+root = Tk()
+root.withdraw()
+file_path = askopenfilename(filetypes=[("Textdokumente", "*.txt"), ("Word-Dokumente", "*.docx"), ("PDF-Dateien", "*.pdf")])
+
+if file_path:
+    if file_path.endswith('.docx'):
+        paragraphs = read_docx_file(file_path)
+        print(paragraphs)
+    elif file_path.endswith('.txt'):
+        content = read_txt_file(file_path)
+        print(content)
+    elif file_path.endswith('.pdf'):
+        content = read_pdf_file(file_path)
+        print(content)
+    else:
+        print("Ungültiger Dateityp. Nur DOCX-, TXT- und PDF-Dateien werden unterstützt.")
+else:
+    print("Keine Datei ausgewählt.")
