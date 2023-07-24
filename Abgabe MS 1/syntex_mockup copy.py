@@ -7,11 +7,24 @@ import numpy as np
 import streamlit as st
 from PyPDF2 import PdfReader
 from docx import Document
-
+import pyttsx3
 
 
 model = load_model("../models/classification/neuro_net_1.h5")
 vectorizer = joblib.load("../models/classification/vectorizer_1.joblib")
+
+def text_to_speech(text):
+    engine = pyttsx3.init()
+    engine.setProperty('rate', 150)  # Anpassen der Sprechgeschwindigkeit (optional)
+    engine.say(text)
+    engine.runAndWait()
+
+# # Texteingabe
+# text = st.text_input("Geben Sie den Text ein:")
+
+# # Button zum Auslösen der Sprachausgabe
+# if st.button("Text vorlesen"):
+#     text_to_speech(text)
 
 def read_pdf(file):
     pdf = PdfReader(file)
@@ -89,6 +102,11 @@ def main():
     
     # Dokument auswählen
     file = st.file_uploader("Dokument auswählen", type=["pdf", "docx", "txt"])
+
+    # Texteingabe
+    text = "Welcome to Syntex, to proceed further with the screenreader function, tap the big red botton on the right in the middle of your screen"
+    text_to_speech(text)
+    
 
     if file is not None:
         content = ""

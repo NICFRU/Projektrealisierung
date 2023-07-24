@@ -1,3 +1,12 @@
+####### Installieren der benötigten Pakete #######
+'''
+pip install speechrecognition           
+pip install pyaudio
+pip install playsound
+pip install gtts
+pip install PyObjC - für Mac
+'''
+####
 import speech_recognition as sr
 from time import ctime # get time details
 import time
