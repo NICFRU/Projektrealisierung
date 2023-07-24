@@ -31,13 +31,19 @@ def record_audio(ask="",filename='transcription.txt'):
         # if ask:!
         #     print(ask)
         #audio = r.listen(source, 5, 5)  # listen for the audio via source
-        modell_speak("You can speak now!")
-        audio = r.listen(source)
-        modell_speak("Done Listening")
-
+        
+        
         voice_data = ''
+        modell_speak("Starting transcription")
+        modell_speak("You can speak now!")
+        voice_data=r.listen(source)
+        modell_speak("Done Listening")
+        
         try:
-            voice_data = r.recognize_google(audio)  # convert audio to text
+            voice_data = r.recognize_google(voice_data)
+            modell_speak("I repead")
+            modell_speak(voice_data)
+            modell_speak('If incorrect press the button again')  # convert audio to text
         except sr.UnknownValueError: # error: recognizer does not understand
             modell_speak('I did not get that')
         except sr.RequestError:
@@ -48,6 +54,7 @@ def record_audio(ask="",filename='transcription.txt'):
         with open(filename, 'w') as file:
             file.write(voice_data)
         #print(voice_data)
+        
         return voice_data
 
 
@@ -62,31 +69,31 @@ def modell_speak(audio_string):
     os.remove(audio_file) # remove audio file
 
 
-def zum_klass(filename='klassifizieren'):
-    modell_speak('choose among compression classification or say both')
-    voice_data=record_audio(filename=filename)
-    pmove=voice_data.lower()
-    if there_exists(["compression","classification","both"],voice_data):
-        pmove=voice_data.lower()
-        modell_speak("You chose " + pmove)
-        modell_speak('If incorrect say restart options else audio finisched')
-        voice_data=record_audio(filename=filename)
-        if there_exists(["restart options"],voice_data):
-            zum_klass(filename=filename)
-        else:
-            modell_speak('audio finisched. Say quit if you want to end the process')
-            voice_data=record_audio()
-            respond(voice_data)
-    else:
-       modell_speak("You chose " + pmove)
-       modell_speak(pmove + " is not an possibility")
-       modell_speak('Options restarting or exit')
-       voice_data=record_audio(filename=filename)
-       if there_exists(["exit"],voice_data):
-        modell_speak('Exit operation')
-       else:
-        modell_speak('restart operation')
-        zum_klass(filename=filename)
+# def zum_klass(filename='klassifizieren'):
+#     modell_speak('choose among compression classification or say both')
+#     voice_data=record_audio(filename=filename)
+#     pmove=voice_data.lower()
+#     if there_exists(["compression","classification","both"],voice_data):
+#         pmove=voice_data.lower()
+#         modell_speak("You chose " + pmove)
+#         modell_speak('If incorrect say restart options else audio finisched')
+#         voice_data=record_audio(filename=filename)
+#         if there_exists(["restart options"],voice_data):
+#             zum_klass(filename=filename)
+#         else:
+#             modell_speak('audio finisched. Say quit if you want to end the process')
+#             voice_data=record_audio()
+#             respond(voice_data)
+#     else:
+#        modell_speak("You chose " + pmove)
+#        modell_speak(pmove + " is not an possibility")
+#        modell_speak('Options restarting or exit')
+#        voice_data=record_audio(filename=filename)
+#        if there_exists(["exit"],voice_data):
+#         modell_speak('Exit operation')
+#        else:
+#         modell_speak('restart operation')
+#         zum_klass(filename=filename)
 
 
 
@@ -144,12 +151,16 @@ def respond(voice_data):
  
         modell_speak(voice_data)
 
-        modell_speak('If incorrect say restart transcription else wait')
+        modell_speak('If incorrect say restart transcription else say exit')
         voice_data=record_audio()
         if there_exists(["restart","restart transcription"],voice_data):
             respond(voice_data)
+        elif there_exists(["exit", "quit", "goodbye"],voice_data):
+            modell_speak("bye")
+            exit()
         else:
-            zum_klass()
+           modell_speak("bye")
+           exit()
 
     if there_exists(["exit", "quit", "goodbye"],voice_data):
         modell_speak("bye")
@@ -162,4 +173,7 @@ if __name__ == "__main__":
     while 1:
 
         voice_data=record_audio()
-        respond(voice_data)
+        print('Text: ',voice_data)
+        modell_speak("bye")
+        exit()
+        #respond(voice_data)
