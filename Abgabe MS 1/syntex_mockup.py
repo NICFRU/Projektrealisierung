@@ -14,6 +14,12 @@ import time
 model = load_model("../models/classification/neuro_net_1.h5")
 vectorizer = joblib.load("../models/classification/vectorizer_1.joblib")
 
+# Schriftgröße für Buttons anpassen
+st.write('<style>div.row-widget button{font-size: 30px !important;}</style>', unsafe_allow_html=True)
+
+# Schriftgröße für Text Area anpassen
+st.write('<style>div.row-widget textarea{font-size: 35px !important;}</style>', unsafe_allow_html=True)
+
 all_texts = "Syntex. Please input your text here or choose a file to upload. Activate either the classification or the summarization by checking the boxes, and if needed, choose a compression ratio of the text. Then click on the last button, to get your desired result."
 
 engine = pyttsx3.init()
