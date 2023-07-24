@@ -223,11 +223,11 @@ def check_class_and_get_model_name(input_dict, class_key):
         raise ValueError(f"'{class_key}' nicht im Eingabedictionary gefunden")
 
     # Entsprechend dem Wert den Modellnamen zuweisen
-    if class_value == 'Wissenschaftliches Paper':
+    if class_value == 'Scientific Paper':
         model_name = 'NICFRU/bart-base-paraphrasing-science'
-    elif class_value == 'Nachrichtenartikel':
+    elif class_value == 'News':
         model_name = 'NICFRU/bart-base-paraphrasing-news'
-    elif class_value == 'Literarischer Text':
+    elif class_value == 'Story':
         model_name = 'NICFRU/bart-base-paraphrasing-story'
     elif class_value == 'Review':
         model_name = 'NICFRU/bart-base-paraphrasing-review'
@@ -269,6 +269,7 @@ def paraphrase_of_text(dictionary, text_name='text', komp_name='reduction_multip
             
             # Anpassung der Länge und Generierung der Zusammenfassung
             min_length_test, max_length_test = adjust_length(batch_text)
+            print(min_length_test, max_length_test)
             ext_summary = summarizer(batch_text, max_length=int(round(max_length_test * komp, 0)), min_length=int(round(min_length_test * komp, 0)), length_penalty=100, num_beams=2)
 
             # Hinzufügen der generierten Zusammenfassung zur Gesamtliste
@@ -324,5 +325,5 @@ def execute_text_gen(dictionary, split='\. ', seed=10):
 
     # Berechne die endgültige Kompressionsrate erneut
     dictionary_copy['ent_com_rate'] = dictionary_copy['länge Zusammenfassung'] / dictionary_copy['tokens_gesamt']
-
+    print(dictionary_copy)
     return dictionary_copy
