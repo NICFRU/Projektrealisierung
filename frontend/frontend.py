@@ -276,7 +276,7 @@ def main():
 
 
     st.title("SynTex")
-    file = st.file_uploader("PLease select a doucment", type=["pdf", "docx", "txt"])
+    file = st.file_uploader("Please select a document", type=["pdf", "docx", "txt"])
     print(file)
 
     # Add custom CSS style
