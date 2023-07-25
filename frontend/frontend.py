@@ -230,10 +230,11 @@ def execute_the_classification_and_summary(input_text,compression_rate,classific
         predicted_class = "Review"
     else:
         predicted_class = "Story"
-    st.subheader("Classification")
+    
 
     if predicted_probability >= 95:
         if classification:
+            st.subheader("Classification")
             st.write(f"The class calculated by the model is:  \"{predicted_class}\". The model is very confident with a probability of {predicted_probability}%.")
         if summary:
             paraphrase_zusammenfassung, text_compression_rate = summarize_text(input_text, compression_rate,predicted_class)
@@ -243,7 +244,18 @@ def execute_the_classification_and_summary(input_text,compression_rate,classific
     else:
         st.write(f"Attention! The model is not entirely certain. The class calculated by the model is: \"{predicted_class}\". However, the model predicts this class with a probability of only {predicted_probability}%.")
 
+def split_into_batches(text, batch_size=500):
+    # First, tokenize the text
+    nltk.download('punkt')
+    tokens = nltk.word_tokenize(text)
 
+    # Split into batches
+    batches = [tokens[i:i + batch_size] for i in range(0, len(tokens), batch_size)]
+    
+    # Join tokens back into strings
+    batches = [' '.join(batch) for batch in batches]
+
+    return batches
 
 def main():
     
@@ -328,15 +340,16 @@ def main():
     }):
         st.write("Click to start recording")
         
-        content=record_audio(filename='transcription_2.txt')
-        # content = read_txt(file)
+        content=record_audio(filename='transcript.txt')
+       
        
         input_text = st.text_area("Speech to Text an copy the text into the Textbox", value=content, height=200, key=30)
+        
         
     
     # Texteingabe
     if file is None:
-        input_text = st.text_area("Enter a text", '', key=10)
+        input_text = st.text_area("Enter a text", '', height=200, key=10)
     
 
     if st.button("read text", on_click=style_button_row, kwargs={
@@ -365,12 +378,19 @@ def main():
     summarization_enabled = st.checkbox("Activate summary")
     
     # Schieberegler für die Kompressionsrate
-    compression_rate = st.slider("Compression rate (%)", min_value=0, max_value=100, value=50, step=1)
+    compression_rate = st.slider("Compression rate (%) to compress the text to the value", min_value=20, max_value=80, value=50, step=1)
     
     # Knopf zum Zusammenfassen und Klassifizieren
     if st.button("Execute",key=2,type='secondary'):
         if input_text:
-            input_text = model_text_korrigieren.restore_punctuation(input_text)
+            try:
+                input_text_neu=''
+                for batch in split_into_batches(input_text):
+                    input_text_neu += model_text_korrigieren.restore_punctuation(batch)
+                input_text= input_text_neu
+                
+            except:
+                pass
             if classification_enabled or summarization_enabled:
                 execute_the_classification_and_summary(input_text,compression_rate,classification_enabled,summarization_enabled)
             else:
