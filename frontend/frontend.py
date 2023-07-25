@@ -219,6 +219,32 @@ def style_button_row(clicked_button_ix, n_buttons):
     st.markdown(f"<style>{style}</style>", unsafe_allow_html=True)
 # Streamlit-App
 
+def execute_the_classification_and_summary(input_text,compression_rate,classification, summary):
+    predicted_class, predicted_probability = classify_text(input_text)
+    predicted_probability = round(predicted_probability[0]*100, 2)
+    if predicted_class == 0:
+        predicted_class = "Scientific Paper"
+    elif predicted_class == 1:
+        predicted_class = "News"
+    elif predicted_class == 2:
+        predicted_class = "Review"
+    else:
+        predicted_class = "Story"
+    st.subheader("Classification")
+
+    if predicted_probability >= 95:
+        if classification:
+            st.write(f"The class calculated by the model is:  \"{predicted_class}\". The model is very confident with a probability of {predicted_probability}%.")
+        if summary:
+            paraphrase_zusammenfassung, text_compression_rate = summarize_text(input_text, compression_rate,predicted_class)
+            st.subheader("Summary")
+            st.write("This is a summary of the input text has a compression rate of {}%:".format(text_compression_rate))
+            st.write(paraphrase_zusammenfassung)
+    else:
+        st.write(f"Attention! The model is not entirely certain. The class calculated by the model is: \"{predicted_class}\". However, the model predicts this class with a probability of only {predicted_probability}%.")
+
+
+
 def main():
     
     # Führe eine Wartezeit von wait_time Sekunden durch
@@ -345,59 +371,24 @@ def main():
     if st.button("Execute",key=2,type='secondary'):
         if input_text:
             input_text = model_text_korrigieren.restore_punctuation(input_text)
-            if classification_enabled:
-                predicted_class, predicted_probability = classify_text(input_text)
-                predicted_probability = round(predicted_probability[0]*100, 2)
-                if predicted_class == 0:
-                    predicted_class = "Scientific Paper"
-                elif predicted_class == 1:
-                    predicted_class = "News"
-                elif predicted_class == 2:
-                    predicted_class = "Review"
-                else:
-                    predicted_class = "Story"
-                st.subheader("Classification")
-
-                if predicted_probability >= 95:
-                    st.write(f"The class calculated by the model is:  \"{predicted_class}\". The model is very confident with a probability of {predicted_probability}%.")
-                    if summarization_enabled:
-                        paraphrase_zusammenfassung, text_compression_rate = summarize_text(input_text, compression_rate,predicted_class)
-                        st.subheader("Summary")
-                        st.write("This is a summary of the input text with a compression rate of {}%:".format(text_compression_rate))
-                        st.write(paraphrase_zusammenfassung)
-                else:
-                    st.write(f"Attention! The model is not entirely certain. The class calculated by the model is: \"{predicted_class}\". However, the model predicts this class with a probability of only {predicted_probability}%.")
+            if classification_enabled or summarization_enabled:
+                execute_the_classification_and_summary(input_text,compression_rate,classification_enabled,summarization_enabled)
+            else:
+                no_box_text='Please check the Box classification and / or summary to proceed further!'
+                st.warning(no_box_text)
+                modell_speak(no_box_text)
         else:
             st.warning("Please enter a text first.")
 
-#     m = st.markdown("""
-# <style>
-# div.stButton > button:nth-of-type(1) {
-#     background-color: #ce1126;
-#     color: white;
-#     height: 3em;
-#     width: 12em;
-#     border-radius:10px;
-#     border:3px solid #000000;
-#     font-size:20px;
-#     font-weight: bold;
-#     margin: auto;
-#     display: block;
-# }
+    if st.button("Helper",type='primary'):
+        scren_text='''Welcome to Syntex. Please input your text in the text area and press the read text button to hear the text. 
+        If you want to upload a document, please select the document type and press the execute button. 
+        You can also edit the text in the designated textbox.
+        If you want to activate the classification and the summary, please check the corresponding boxes. 
 
-# div.stButton > button:hover {
-# 	background:linear-gradient(to bottom, #ce1126 5%, #ff5a5a 100%);
-# 	background-color:#ce1126;
-# }
- 
-# div.stButton > button:active {
-# 	position:relative;
-# 	top:3px;
-# }
-
-# </style>""", unsafe_allow_html=True)
-    if st.button("Screen reader",type='primary'):
-        scren_text='Welcome to Syntex. Please input your text in the text area and press the read text button to hear the text. If you want to upload a document, please select the document type and press the execute button. If you want to activate the classification and the summary, please check the corresponding boxes. You can adjust the compression rate with the slider. To execute the classification and the summary, please press the execute button.'
+        You can adjust the compression rate with the slider. 
+        To execute the classification and the summary, please press the execute button.
+        '''
         modell_speak(scren_text)
 if __name__ == '__main__':
     
