@@ -54,7 +54,7 @@ To use the application, you have two options for inputting your data:
 
 1. If your data file is hosted elsewhere, you can directly use the absolute link to that file. Enter this link in the provided text field in the application interface.
 
-2. Confirm your input by pressing 'Enter' or the corresponding confirmation button in the interface. Upon confirmation, a new text field will appear.
+2. Confirm your input by pressing 'Enter'. Upon confirmation, a new text field will appear.
 
 3. Copy the contents of the new text field and paste them back into the original text field (where you initially entered the link).
 
