@@ -16,7 +16,7 @@ Das Projekt bietet verschiedene Funktionen:
    - Für Reviews wird das Modell 'NICFRU/bart-base-paraphrasing-review' genutzt.
 - **Sprache-zu-Text**: Die Anwendung ist auch in der Lage, gesprochene Sprache in Text umzuwandeln.
 - **Datei-Upload**: Nutzer können Daten in den Formaten PDF, DOCX und TXT hochladen.
-- **Barrierefreiheit**: Nutzer können Vorlesefunktionen nutzen und für die Vergrößerung des Textes, kann "Strg/Cmd + +" genutzt werden
+- **Barrierefreiheit**: Nutzer können Vorlesefunktionen nutzen und für die Vergrößerung des Textes, kann "Strg/Cmd" & "+" genutzt werden
 
 ## Anwendung des Frontends
 Folgen Sie diesen Schritten, um das Frontend zu verwenden: 
