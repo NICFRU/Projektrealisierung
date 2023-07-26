@@ -1,7 +1,7 @@
 # SynTex
 
 ## Projektrealisierung
-Dieses Projekt wurde realisiert von Niclas Cramer, Niklas Koch, Jasmina Paskanovitch und Antoine Fuchs.
+Dieses Projekt wurde realisiert von Niclas Cramer, Niklas Koch, Jasmina Pascanovic und Antoine Fuchs.
 
 ## Über das Projekt
 Das SynTex Repository beinhaltet verschiedene Komponenten, darunter Modelle zur Klassifizierung und Zusammenfassung von Texten, Trainingsdaten sowie ein Frontend, das all diese Aspekte kombiniert. Wenn Sie mehr über die Funktionen erfahren möchten, lesen Sie die Anwenderdokumentation oder werfen Sie einen Blick auf den Code.
