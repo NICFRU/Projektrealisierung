@@ -373,7 +373,7 @@ def main():
                 content = read_pdf_file(input_text)
                 print(3)
             input_text=content
-            input_text = st.text_area("Copy the text into the ", input_text, height=200, key=100)
+            input_text = st.text_area("Copy the text into the above text field ", input_text, height=200, key=100)
             st.write("Copy the Data into above text field ")
 
     
