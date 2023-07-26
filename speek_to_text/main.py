@@ -95,47 +95,47 @@ def zum_klass(filename='klassifizieren'):
 
 def respond(voice_data):
     # 1: greeting
-    # if 'what is your name' in voice_data:
+    if 'what is your name' in voice_data:
 
-    #     modell_speak('My name is Nico')
+        modell_speak('My name is Nico')
 
-    # if there_exists(["what's the time","tell me the time","what time is it","what is the time"],voice_data):
-    #     time = ctime().split(" ")[4].split(":")[0:2]
-    #     if time[0] == "00":
-    #         hours = '12'
-    #     else:
-    #         hours = time[0]
-    #     minutes = time[1]
-    #     time = hours + " hours and " + minutes + "minutes"
-    #     modell_speak(time)
+    if there_exists(["what's the time","tell me the time","what time is it","what is the time"],voice_data):
+        time = ctime().split(" ")[4].split(":")[0:2]
+        if time[0] == "00":
+            hours = '12'
+        else:
+            hours = time[0]
+        minutes = time[1]
+        time = hours + " hours and " + minutes + "minutes"
+        modell_speak(time)
 
-    # if there_exists(["game"],voice_data):
-    #     modell_speak("choose among rock paper or scissor")
-    #     voice_data = record_audio("choose among rock paper or scissor")
-    #     print(voice_data)
-    #     moves=["rock", "paper", "scissor"]
+    if there_exists(["game"],voice_data):
+        modell_speak("choose among rock paper or scissor")
+        voice_data = record_audio("choose among rock paper or scissor")
+        print(voice_data)
+        moves=["rock", "paper", "scissor"]
     
-    #     cmove=random.choice(moves)
-    #     pmove=voice_data.lower()
+        cmove=random.choice(moves)
+        pmove=voice_data.lower()
         
 
-    #     modell_speak("The computer chose " + cmove)
-    #     modell_speak("You chose " + pmove)
-    #     #modell_speak("hi")
-    #     if pmove==cmove:
-    #         modell_speak("the match is draw")
-    #     elif pmove== "rock" and cmove== "scissor":
-    #         modell_speak("Player wins")
-    #     elif pmove== "rock" and cmove== "paper":
-    #         modell_speak("Computer wins")
-    #     elif pmove== "paper" and cmove== "rock":
-    #         modell_speak("Player wins")
-    #     elif pmove== "paper" and cmove== "scissor":
-    #         modell_speak("Computer wins")
-    #     elif pmove== "scissor" and cmove== "paper":
-    #         modell_speak("Player wins")
-    #     elif pmove== "scissor" and cmove== "rock":
-    #         modell_speak("Computer wins")
+        modell_speak("The computer chose " + cmove)
+        modell_speak("You chose " + pmove)
+        #modell_speak("hi")
+        if pmove==cmove:
+            modell_speak("the match is draw")
+        elif pmove== "rock" and cmove== "scissor":
+            modell_speak("Player wins")
+        elif pmove== "rock" and cmove== "paper":
+            modell_speak("Computer wins")
+        elif pmove== "paper" and cmove== "rock":
+            modell_speak("Player wins")
+        elif pmove== "paper" and cmove== "scissor":
+            modell_speak("Computer wins")
+        elif pmove== "scissor" and cmove== "paper":
+            modell_speak("Player wins")
+        elif pmove== "scissor" and cmove== "rock":
+            modell_speak("Computer wins")
 
     if there_exists(["start transcription", "begin recording","recording","open text file","transcription","restart transcription"],voice_data):
         modell_speak("Starting transcription")
@@ -158,8 +158,6 @@ time.sleep(1)
 
 modell_speak('How can I help you')
 
-if __name__ == "__main__":
-    while 1:
-
-        voice_data=record_audio()
-        respond(voice_data)
+while 1:
+    voice_data=record_audio()
+    respond(voice_data)
