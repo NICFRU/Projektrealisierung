@@ -18,9 +18,9 @@ Das Projekt bietet verschiedene Funktionen:
 - **Datei-Upload**: Nutzer können Daten in den Formaten PDF, DOCX und TXT hochladen.
 
 ## Anwendung des Frontends
-Folgen Sie diesen Schritten, um das Frontend zu verwenden:
+Folgen Sie diesen Schritten, um das Frontend zu verwenden: 
 
-1. Installieren Sie die erforderliche Umgebung mit Conda, indem Sie folgenden Befehl verwenden:
+1. Installieren Sie die erforderliche Umgebung mit Conda, indem Sie folgenden Befehl verwenden (Bitte beachten Sie, dass die Installation der Umgebung momentan nur auf Apple-Geräten unterstützt wird):
 ```bash
 conda env create -n projektrealisierung --file environment.yml
 ```
