@@ -46,7 +46,7 @@ To use the application, you have two options for inputting your data:
 
 ### Option 1: Using a local file
 
-1. Place your data file(s) in the 'Data' folder, which is located in the 'Frontend' directory of this application.
+1. Place your data file(s) in the 'Testfiles' folder, which is located in the 'Frontend' directory of this application.
 
 2. Within the application interface, you'll find a file selection tool. Use this to select your data file from the 'Data' folder.
 

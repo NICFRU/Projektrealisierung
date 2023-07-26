@@ -149,7 +149,7 @@ def read_pdf_file(file_path):
     return content
 
 def read_pdf(file):
-    data_folder = "Daten"
+    data_folder = "Testfiles"
     file_path = os.path.join(data_folder, file)
     pdf = PdfReader(file_path)
     text = ""
@@ -158,7 +158,7 @@ def read_pdf(file):
     return text
 
 def read_docx(file):
-    data_folder = "Daten"
+    data_folder = "Testfiles"
     file_path = os.path.join(data_folder, file)
     doc = Document(file_path)
     text = ""
@@ -167,7 +167,7 @@ def read_docx(file):
     return text
 
 def read_txt(file):
-    data_folder = "Daten"
+    data_folder = "Testfiles"
     file_path = os.path.join(data_folder, file.name)
     with open(file_path, 'r', encoding='utf-8') as f:
         text = f.read()
