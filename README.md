@@ -40,5 +40,24 @@ cd frontend
 ```bash
 streamlit run frontend.py
 ```
+## Data Input Instructions
+
+To use the application, you have two options for inputting your data:
+
+### Option 1: Using a local file
+
+1. Place your data file(s) in the 'Data' folder, which is located in the 'Frontend' directory of this application.
+
+2. Within the application interface, you'll find a file selection tool. Use this to select your data file from the 'Data' folder.
+
+### Option 2: Using an absolute link
+
+1. If your data file is hosted elsewhere, you can directly use the absolute link to that file. Enter this link in the provided text field in the application interface.
+
+2. Confirm your input by pressing 'Enter' or the corresponding confirmation button in the interface. Upon confirmation, a new text field will appear.
+
+3. Copy the contents of the new text field and paste them back into the original text field (where you initially entered the link).
+
+Please ensure that you follow these instructions carefully to avoid any issues in data processing. 
 
 Viel Spaß beim Erforschen und Verwenden von SynTex!
