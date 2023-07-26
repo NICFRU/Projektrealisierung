@@ -30,7 +30,6 @@ conda activate projektrealisierung
 ```
 3. Installieren Sie das 'spacy' Modul und das 'en-core-web-lg' Modell:
 ```bash
-pip install -U spacy
 python -m spacy download en_core_web_lg
 ```
 4. Wechseln Sie in den 'frontend'-Ordner:
