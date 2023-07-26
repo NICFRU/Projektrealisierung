@@ -133,7 +133,7 @@ def extract_text_from_page(page):
 def read_docx_file(file_path):
     doc = Document(file_path)
     paragraphs = [p.text for p in doc.paragraphs]
-    return paragraphs
+    return " ".join(paragraphs)
 
 def read_txt_file(file_path):
     with open(file_path, 'r') as file:
@@ -331,17 +331,19 @@ def main():
         
         content = ""
         
+        try:
+            file_type = file.type
+            if file_type == 'application/pdf':
+                content = read_pdf(file)
+            elif file_type == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+                content = read_docx(file)
+            elif file_type == 'text/plain':
+                content = read_txt(file)
 
-        file_type = file.type
-        if file_type == 'application/pdf':
-            content = read_pdf(file)
-        elif file_type == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
-            content = read_docx(file)
-        elif file_type == 'text/plain':
-            content = read_txt(file)
-
-        st.header("Inhalt des Dokuments")
-        input_text = st.text_area("Ausgabe", value=content, height=200, key=20)
+            st.header("Inhalt des Dokuments")
+            input_text = st.text_area("Ausgabe", value=content, height=200, key=20)
+        except:
+            st.write("Add the absolute link into the text field to get a file outside of the repo")
         
     if st.button("Speech to Text", on_click=style_button_row, kwargs={
         'clicked_button_ix': 2, 'n_buttons': 2
@@ -372,6 +374,7 @@ def main():
                 print(3)
             input_text=content
             input_text = st.text_area("Copy the text into the ", input_text, height=200, key=100)
+            st.write("Copy the Data into above text field ")
 
     
 
