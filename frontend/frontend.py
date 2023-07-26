@@ -129,6 +129,7 @@ def extract_text_from_page(page):
 
 
 # Button zum Auslösen der Sprachausgabe
+
 def read_docx_file(file_path):
     doc = Document(file_path)
     paragraphs = [p.text for p in doc.paragraphs]
@@ -147,23 +148,28 @@ def read_pdf_file(file_path):
             content += page.extract_text()
     return content
 
-
 def read_pdf(file):
-    pdf = PdfReader(file)
+    data_folder = "Daten"
+    file_path = os.path.join(data_folder, file)
+    pdf = PdfReader(file_path)
     text = ""
-    for page in range(len(pdf.pages) ):
+    for page in range(len(pdf.pages)):
         text += pdf.pages[page].extract_text()
     return text
 
 def read_docx(file):
-    doc = Document(file)
+    data_folder = "Daten"
+    file_path = os.path.join(data_folder, file)
+    doc = Document(file_path)
     text = ""
     for paragraph in doc.paragraphs:
         text += paragraph.text + "\n"
     return text
 
 def read_txt(file):
-    with open(file.name, 'r', encoding='utf-8') as f:
+    data_folder = "Daten"
+    file_path = os.path.join(data_folder, file.name)
+    with open(file_path, 'r', encoding='utf-8') as f:
         text = f.read()
     return text
 
@@ -256,7 +262,8 @@ def split_into_batches(text, batch_size=500):
     batches = [' '.join(batch) for batch in batches]
 
     return batches
-
+def is_file(path):
+    return os.path.isfile(path)
 def main():
     
     # Führe eine Wartezeit von wait_time Sekunden durch
@@ -323,6 +330,7 @@ def main():
     if file is not None:
         
         content = ""
+        
 
         file_type = file.type
         if file_type == 'application/pdf':
@@ -350,6 +358,21 @@ def main():
     # Texteingabe
     if file is None:
         input_text = st.text_area("Enter a text", '', height=200, key=10)
+        if is_file(input_text):
+            print(True)
+            if input_text.endswith('.docx'):
+                content = read_docx_file(input_text)
+                print(1)
+            elif input_text.endswith('.txt'):
+                content = read_txt_file(input_text)
+                print(2)
+                print(content)
+            elif input_text.endswith('.pdf'):
+                content = read_pdf_file(input_text)
+                print(3)
+            input_text=content
+            input_text = st.text_area("Copy the text into the ", input_text, height=200, key=100)
+
     
 
     if st.button("read text", on_click=style_button_row, kwargs={
