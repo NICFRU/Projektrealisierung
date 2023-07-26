@@ -52,8 +52,8 @@ from python_scripts.zusammenfassung import execute_text_gen
 ############ Laden der Modelle ###############
 model_text_korrigieren = PunctuationModel()
 ## Laden des Modells für die Klassifikation
-model_classification = load_model("classification/neuro_net_1.h5")
-vectorizer = load("classification/vectorizer_1.joblib")
+model_classification = load_model("classification_modells/neuro_net_1.h5")
+vectorizer = load("classification_modells/vectorizer_1.joblib")
 
 ## Laden des Modells für die Zusammenfassung
 for model_name in ['NICFRU/bart-base-paraphrasing-science','NICFRU/bart-base-paraphrasing-news','NICFRU/bart-base-paraphrasing-story','NICFRU/bart-base-paraphrasing-review']:
