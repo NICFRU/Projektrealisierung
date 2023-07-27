@@ -65,4 +65,11 @@ Please ensure that you follow these instructions carefully to avoid any issues i
 1. Link des Video: [Google Drive](https://drive.google.com/drive/folders/1U2q4z6XP3N9xWHxIQZvQXp1SV8ZtrY0u?usp=sharing)
 2. Zusätzliche Daten für das Trainieren der Modelle: [Google Drive](https://drive.google.com/drive/folders/1CZcYKUTOFnr5zN2p7uIocDPDbHviwu7R?usp=sharing)
 
+##  Paraphrasierungsmodelle
+
+1. [Rezensions-Paraphrasierungsmodell](https://huggingface.co/NICFRU/bart-base-paraphrasing-review)
+2. [Geschichts-Paraphrasierungsmodell](https://huggingface.co/NICFRU/bart-base-paraphrasing-story)
+3. [Nachrichten-Paraphrasierungsmodell](https://huggingface.co/NICFRU/bart-base-paraphrasing-news)
+4. [Wissenschafts-Paraphrasierungsmodell](https://huggingface.co/NICFRU/bart-base-paraphrasing-science)
+
 
